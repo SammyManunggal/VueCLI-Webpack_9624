@@ -20,10 +20,10 @@
                         <v-chip v-if="item.priority == 'Penting'" color="red" outlined>
                             {{ item.priority }}
                         </v-chip>
-                        <v-chip v-else-if="item.priority == 'Tidak penting'" color="blue" outlined>
+                        <v-chip v-else-if="item.priority == 'Tidak penting'" color="green" outlined>
                             {{ item.priority }}
                         </v-chip>
-                        <v-chip v-else-if="item.priority == 'Biasa'" color="green" outlined>
+                        <v-chip v-else-if="item.priority == 'Biasa'" color="blue" outlined>
                             {{ item.priority }}
                         </v-chip>
                         
