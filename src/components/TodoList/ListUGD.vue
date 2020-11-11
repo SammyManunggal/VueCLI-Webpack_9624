@@ -16,7 +16,18 @@
                 </v-btn>
             </v-card-title>
             <v-data-table :headers="headers" :items="todos" :search="search">
-                
+                 <template v-slot:[`item.priority`]="{ item }">
+                        <v-chip v-if="item.priority == 'Penting'" color="red" outlined>
+                            {{ item.priority }}
+                        </v-chip>
+                        <v-chip v-else-if="item.priority == 'Tidak penting'" color="blue" outlined>
+                            {{ item.priority }}
+                        </v-chip>
+                        <v-chip v-else-if="item.priority == 'Biasa'" color="green" outlined>
+                            {{ item.priority }}
+                        </v-chip>
+                        
+                 </template>
                 <template v-slot:[`item.actions`]="{ item }">
                     <v-btn small class="mr-2" @click="editItem(item)">
                         edit
