@@ -16,6 +16,7 @@
                 </v-btn>
             </v-card-title>
             <v-data-table :headers="headers" :items="todos" :search="search">
+                
                 <template v-slot:[`item.actions`]="{ item }">
                     <v-btn small class="mr-2" @click="editItem(item)">
                         edit
@@ -62,6 +63,15 @@
                 </v-card-actions>
             </v-card>
         </v-dialog>
+        <v-dialog v-model="dialogHapus" max-width="500px">
+          <v-card>
+            <v-card-title class="headline">Yakin ingin menghapus?</v-card-title>
+            <v-card-actions>
+              <v-btn color="error" text @click="closeDelete">Cancel</v-btn>
+              <v-btn color="green" text @click="deleteConfirm">OK</v-btn>
+            </v-card-actions>
+          </v-card>
+        </v-dialog>
     </v-main>
 </template>
 <script>
@@ -71,7 +81,8 @@ export default {
             return {
                 search: null,
                 dialog: false,
-              
+              dialogHapus : false,
+              editedIndex: -1,
                 headers: [
                     {
                         text: "Task",
@@ -109,9 +120,16 @@ export default {
         },
         methods: {
             save(){
-                this.todos.push(this.formTodo);        
+                if (this.editedIndex > -1) {
+                        Object.assign(this.todos[this.editedIndex], this.formTodo)
+                        
+                } else {
+                        this.todos.push(this.formTodo)
+                
+                }
                 this.resetForm();
                 this.dialog = false;
+                
             },
             cancel() {
                 this.resetForm();
@@ -124,7 +142,27 @@ export default {
                     note: null,
                 };
             },
+            editItem (item) {
+	            this.dialog = true
+                this.editedIndex = this.todos.indexOf(item)
+                this.formTodo = Object.assign({}, item)
+        
+                },
+            deleteItem (item) {
+                this.editedIndex = this.todos.indexOf(item)
+                this.formTodo= Object.assign({}, item)
+                this.dialogHapus = true
+            },
             
+            deleteConfirm () {
+                this.todos.splice(this.editedIndex, 1)
+                this.dialogHapus = false
+                 this.resetForm();
+            },
+            closeDelete(){
+                 this.dialogHapus = false
+            }
+
             
             
             
