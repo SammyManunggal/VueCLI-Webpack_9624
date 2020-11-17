@@ -110,7 +110,7 @@
                         </li>
                     </ul>
                     <br>
-                    <v-btn color="error"  @click="deleteList">Delete</v-btn>
+                    <v-btn color="error" @click="deleteList">Delete</v-btn>
                 </div>
         </v-card-text>
         <v-dialog v-model="dialogHapus" max-width="500px">
@@ -226,7 +226,8 @@ this.dialog = true;
                  this.dialogHapus = false
             },
             deleteList(){
-
+                this.editedIndex = this.todos.indexOf(item);
+                this.formTodo= Object.assign({}, item);
             },
             
             
