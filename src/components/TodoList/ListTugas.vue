@@ -1,6 +1,6 @@
 <template>
     <v-main class="list">
-        <h3 class="text-h3 font-weight-medium mb-5">To Do List</h3>
+        <h3 class="text-h3 font-weight-medium mb-5">To Do List Tugas</h3>
         <v-card>
             <v-card-title>
                 <v-text-field
@@ -15,7 +15,30 @@
                     Tambah
                 </v-btn>
             </v-card-title>
-            <v-data-table :headers="headers" :items="todos" :search="search">
+            <v-data-table :headers="headers" :items="todos" :search="search" :expanded.sync="expanded" item-key="note" show-expand  class="elevation-1" >
+                
+                <template v-slot:[`item.selected`]="{ item }">
+                        <input v-model="selected" :value="item.task"
+                         type="checkbox" enabled>
+                </template>
+                   
+                <template v-slot:top>
+                    <v-toolbar flat>
+                            <v-spacer></v-spacer>
+                            <v-switch
+                                v-model="singleExpand"
+                                label="Single expand"
+                                class="mt-2"
+                            ></v-switch>
+                    </v-toolbar>
+                </template>
+                <template v-slot:expanded-item="{headers, item}">
+                    <td align="start" :colspan="headers.length">
+                        <h5> Note</h5>
+                        <br> {{ item.note }} <br>
+                    </td>
+                </template>
+                 
                  <template v-slot:[`item.priority`]="{ item }">
                         <v-chip v-if="item.priority == 'Penting'" color="red" outlined>
                             {{ item.priority }}
@@ -28,6 +51,7 @@
                         </v-chip>
                         
                  </template>
+                 
                 <template v-slot:[`item.actions`]="{ item }">
                     <v-btn small class="mr-2" @click="editItem(item)">
                         edit
@@ -63,6 +87,7 @@
                         ></v-textarea>
                     </v-container>
                 </v-card-text>
+                
                 <v-card-actions>
                     <v-spacer></v-spacer>
                     <v-btn color="blue darken-1" text @click="cancel">
@@ -74,6 +99,20 @@
                 </v-card-actions>
             </v-card>
         </v-dialog>
+        <v-card-text>
+                <div align="start"  v-if="selected.length > 0">
+                    <br><br>
+                    <h2>DELETE MULTIPLE : </h2>
+                    <ul>
+                        <li v-for="(item, index)
+                         in selected" :key="index">
+                            {{item}}
+                        </li>
+                    </ul>
+                    <br>
+                    <v-btn color="error"  @click="deleteList">Delete</v-btn>
+                </div>
+        </v-card-text>
         <v-dialog v-model="dialogHapus" max-width="500px">
           <v-card>
             <v-card-title class="headline">Yakin ingin menghapus?</v-card-title>
@@ -90,36 +129,49 @@ export default {
         name: "List",
         data() {
             return {
+                deleteList: true,
                 search: null,
                 dialog: false,
               dialogHapus : false,
+                expanded: [],
+                selected: [],
+                singleExpand: false,
               editedIndex: -1,
                 headers: [
-                    {
-                        text: "Task",
+                    {   
+                        
+                        text: "",
                         align: "start",
                         sortable: true,
-                        value: "task",
+                        value: 'data-table-select"',
                     },
+                    { text: "Task" , value: 'task'},
                     { text: "Priority", value: "priority" },
-                    { text: "Note", value: "note" },
+                    
                     { text: "Actions", value: "actions" },
+                    { text: "Choose", value: "selected" },
                 ],
                 todos: [
                     {
+                        note: "huffttt",
                         task: "bernafas",
                         priority: "Penting",
-                        note: "huffttt",
+                        
+                       
                     },
                     {
+                        note: "bersama tman2",
                         task: "nongkrong",
                         priority: "Tidak penting",
-                        note: "bersama tman2",
+                        
+                        
                     },
                     {
+                        note: "masak air 500ml",
                         task: "masak",
                         priority: "Biasa",
-                        note: "masak air 500ml",
+                        
+                        
                     },
                 ],
                 formTodo: {
@@ -172,8 +224,10 @@ this.dialog = true;
             },
             closeDelete(){
                  this.dialogHapus = false
-            }
-            
+            },
+            deleteList(){
+
+            },
             
             
         },
